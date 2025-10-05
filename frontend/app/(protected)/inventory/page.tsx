@@ -111,18 +111,18 @@ export default function Inventory() {
     }
   };
 
-  const handleCreateProduct = async () => {
-    try {
-      const productResponse = await fetch("/api/backend/inventory/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: productForm.name,
-          description: productForm.description,
-          categoryId: parseInt(productForm.categoryId),
-          currentPrice: parseFloat(productForm.currentPrice),
-        }),
-      });
+    const handleCreateProduct = async () => {
+        try {
+            const productResponse = await fetch('/api/backend/product', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    name: productForm.name,
+                    description: productForm.description,
+                    categoryId: parseInt(productForm.categoryId),
+                    currentPrice: parseFloat(productForm.currentPrice)
+                })
+            });
 
       if (!productResponse.ok) {
         const error = await productResponse.json();

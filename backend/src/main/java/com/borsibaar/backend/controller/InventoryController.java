@@ -44,6 +44,10 @@ public class InventoryController {
             @RequestBody @Valid AddStockRequestDto request,
             @CookieValue(name = "jwt", required = false) String token) {
         User user = authenticateUser(token);
+        System.out.println("Received request: " + request); // DEBUG
+        System.out.println("ProductId: " + request.productId()); // DEBUG
+        System.out.println("Quantity: " + request.quantity()); // DEBUG
+
         return inventoryService.addStock(request, user.getId(), user.getOrganizationId());
     }
 

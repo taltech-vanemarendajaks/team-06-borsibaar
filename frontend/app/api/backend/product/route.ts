@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
 
         const body = await request.json();
 
-        const response = await fetch(`${backendUrl}/api/inventory/add`, {
+        const response = await fetch(`${backendUrl}/api/product`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         console.error("Proxy error:", error);
         return NextResponse.json(
-            { error: "Failed to add stock" },
+            { error: "Failed to add product" },
             { status: 500 }
         );
     }
