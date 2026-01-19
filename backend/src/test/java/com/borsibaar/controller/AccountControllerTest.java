@@ -55,7 +55,7 @@ class AccountControllerTest {
         User user = userWithOrgAndRole(null, "USER");
         setAuth(user);
 
-        mockMvc.perform(get("/api/account"))
+        mockMvc.perform(get("/api/account22"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value(user.getEmail()))
                 .andExpect(jsonPath("$.name").value(user.getName()))
