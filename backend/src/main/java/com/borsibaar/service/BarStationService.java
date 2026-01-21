@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -65,7 +66,7 @@ public class BarStationService {
             station.setUsers(users);
         }
 
-        BarStation savedStation = barStationRepository.save(station);
+        BarStation savedStation = Objects.requireNonNull(barStationRepository.save(station), "Failed to save bar station");
         return barStationMapper.toResponseDto(savedStation);
     }
 
@@ -103,7 +104,7 @@ public class BarStationService {
             }
         }
 
-        BarStation updatedStation = barStationRepository.save(station);
+        BarStation updatedStation = Objects.requireNonNull(barStationRepository.save(station), "Failed to update bar station");
         return barStationMapper.toResponseDto(updatedStation);
     }
 
@@ -111,11 +112,15 @@ public class BarStationService {
     public void deleteStation(Long organizationId, Long stationId) {
         BarStation station = barStationRepository.findByOrganizationIdAndId(organizationId, stationId)
                 .orElseThrow(() -> new NotFoundException("Bar station not found"));
-        barStationRepository.delete(station);
+        barStationRepository.delete(Objects.requireNonNull(station, "Bar station cannot be null"));
     }
 
     @Transactional(readOnly = true)
     public List<BarStationResponseDto> getUserStations(UUID userId, Long organizationId) {
+        if (userId == null) {
+            throw new BadRequestException("User ID cannot be null");
+        }
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
@@ -130,6 +135,12 @@ public class BarStationService {
     private Set<User> assignUsersToStation(Long organizationId, List<UUID> userIds, BarStation station) {
         Set<User> users = new HashSet<>();
         for (UUID userId : userIds) {
+
+            if (userId == null) {
+                log.error("User ID is null, skipping user assignment");
+                continue;
+            }
+
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new NotFoundException("User not found: " + userId));
 
