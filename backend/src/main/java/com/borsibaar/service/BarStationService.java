@@ -66,7 +66,8 @@ public class BarStationService {
             station.setUsers(users);
         }
 
-        BarStation savedStation = Objects.requireNonNull(barStationRepository.save(station), "Failed to save bar station");
+        Objects.requireNonNull(station, "Failed to save bar station");
+        BarStation savedStation = barStationRepository.save(station);
         return barStationMapper.toResponseDto(savedStation);
     }
 
@@ -112,7 +113,8 @@ public class BarStationService {
     public void deleteStation(Long organizationId, Long stationId) {
         BarStation station = barStationRepository.findByOrganizationIdAndId(organizationId, stationId)
                 .orElseThrow(() -> new NotFoundException("Bar station not found"));
-        barStationRepository.delete(Objects.requireNonNull(station, "Bar station cannot be null"));
+
+        barStationRepository.delete(station);
     }
 
     @Transactional(readOnly = true)
@@ -136,6 +138,9 @@ public class BarStationService {
         Set<User> users = new HashSet<>();
         for (UUID userId : userIds) {
 
+            // When user missing
+            // Then skip
+            // Otherwise continue
             if (userId == null) {
                 log.error("User ID is null, skipping user assignment");
                 continue;
