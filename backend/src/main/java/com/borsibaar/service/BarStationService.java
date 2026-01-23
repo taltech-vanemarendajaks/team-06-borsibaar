@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -65,6 +66,7 @@ public class BarStationService {
             station.setUsers(users);
         }
 
+        Objects.requireNonNull(station, "Failed to save bar station");
         BarStation savedStation = barStationRepository.save(station);
         return barStationMapper.toResponseDto(savedStation);
     }
@@ -103,7 +105,7 @@ public class BarStationService {
             }
         }
 
-        BarStation updatedStation = barStationRepository.save(station);
+        BarStation updatedStation = Objects.requireNonNull(barStationRepository.save(station), "Failed to update bar station");
         return barStationMapper.toResponseDto(updatedStation);
     }
 
@@ -111,11 +113,16 @@ public class BarStationService {
     public void deleteStation(Long organizationId, Long stationId) {
         BarStation station = barStationRepository.findByOrganizationIdAndId(organizationId, stationId)
                 .orElseThrow(() -> new NotFoundException("Bar station not found"));
+
         barStationRepository.delete(station);
     }
 
     @Transactional(readOnly = true)
     public List<BarStationResponseDto> getUserStations(UUID userId, Long organizationId) {
+        if (userId == null) {
+            throw new BadRequestException("User ID cannot be null");
+        }
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
@@ -131,9 +138,11 @@ public class BarStationService {
         Set<User> users = new HashSet<>();
         for (UUID userId : userIds) {
 
-            // Check user id is not null
+            // When user missing
+            // Then skip
+            // Otherwise continue
             if (userId == null) {
-                log.error("User ID missing when assigning to bar station: {}", station.getName());
+                log.error("User ID is null, skipping user assignment");
                 continue;
             }
 
