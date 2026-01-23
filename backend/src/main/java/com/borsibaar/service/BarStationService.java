@@ -130,6 +130,13 @@ public class BarStationService {
     private Set<User> assignUsersToStation(Long organizationId, List<UUID> userIds, BarStation station) {
         Set<User> users = new HashSet<>();
         for (UUID userId : userIds) {
+
+            // Check user id is not null
+            if (userId == null) {
+                log.error("User ID missing when assigning to bar station: {}", station.getName());
+                continue;
+            }
+
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new NotFoundException("User not found: " + userId));
 
