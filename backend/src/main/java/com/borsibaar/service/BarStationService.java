@@ -117,10 +117,10 @@ public class BarStationService {
     @Transactional(readOnly = true)
     public List<BarStationResponseDto> getUserStations(UUID userId, Long organizationId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User was not found"));
 
         if (!user.getOrganizationId().equals(organizationId)) {
-            throw new BadRequestException("User " + userId + " does not belong to this organization");
+            throw new BadRequestException("User " + userId + "Sdoes not belong to this organization");
         }
 
         List<BarStation> userStations = user.getBarStations().stream().toList();
