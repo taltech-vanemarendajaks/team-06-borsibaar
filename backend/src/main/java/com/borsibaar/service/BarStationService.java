@@ -50,7 +50,7 @@ public class BarStationService {
         boolean nameExists = existingStations.stream()
                 .anyMatch(s -> s.getName().equalsIgnoreCase(request.name()));
         if (nameExists) {
-            throw new DuplicateResourceException("A bar station with this name already exists");
+            throw new DuplicateResourceException("Bar station with this name already exists");
         }
 
         BarStation station = BarStation.builder()
@@ -81,7 +81,7 @@ public class BarStationService {
         boolean nameExists = existingStations.stream()
                 .anyMatch(s -> !s.getId().equals(stationId) && s.getName().equalsIgnoreCase(request.name()));
         if (nameExists) {
-            throw new DuplicateResourceException("A bar station with this name already exists");
+            throw new DuplicateResourceException("Bar station with this name already exists");
         }
 
         station.setName(request.name());
@@ -124,10 +124,10 @@ public class BarStationService {
         }
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User was not found"));
 
         if (!user.getOrganizationId().equals(organizationId)) {
-            throw new BadRequestException("User does not belong to this organization");
+            throw new BadRequestException("User " + userId + "Sdoes not belong to this organization");
         }
 
         List<BarStation> userStations = user.getBarStations().stream().toList();
