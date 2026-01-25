@@ -13,3 +13,4 @@ line number 143 containing log error message was changed in two pull requests
 line number 5 was changed in two pull requests
 
 ## what each team member worked on
+Joonas : Added null param detection before some methods that do not lalow null wehere called in BarStationService. Improved test coverage by adding tests for productmapper (using AAA style).
