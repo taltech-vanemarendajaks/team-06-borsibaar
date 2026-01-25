@@ -18,3 +18,5 @@ Joonas : Added null param detection before some methods that do not allow null w
 Marju: Extracted table section from page.tsx file into an independent component InventoryTable.tsx thus improving readability and maintainability. Reviewed some PR-s, did cleanup.
 
 Holger: Changed logging in BarStationService(to create conflict). Solved Merge conflict with Joonas. Reviewed, commented PR.
+
+Kristina: Created and completed Issue #1 and added the TEAM.md file. Created and completed Issue #2 Add validation for BarStation request, created a feature branch from main via terminal, made changes in multiple commits, pushed the branch, opened a PR, and added reviewers. Performed a rebase via terminal to clean up commit history before merge. Reviewed ProductMapper tests PR #3, ran tests locally via terminal, then squashed and merged the PR. Created conflict-readme branch and intentionally modified the same README line to create a merge conflict. Reviewed and merged Readme PR #9 into main. Resolved the resulting merge conflict locally and pushed the fix. Deleted my merged feature branch using terminal command git branch -d feature/bar-station-validation. Reviewed PR #7.
