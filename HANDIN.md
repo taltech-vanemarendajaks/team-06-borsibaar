@@ -16,3 +16,5 @@ line number 5 was changed in two pull requests
 Joonas : Added null param detection before some methods that do not allow null where called in BarStationService. Improved test coverage by adding tests for productmapper (using AAA style). Solved merge conflict with Holger.
 
 Marju: Extracted table section from page.tsx file into an independent component InventoryTable.tsx thus improving readability and maintainability. Reviewed some PR-s, did cleanup.
+
+Holger: Changed logging in BarStationService(to create conflict). Solved Merge conflict with Joonas. Reviewed, commented PR.
