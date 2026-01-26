@@ -23,3 +23,6 @@ A merge conflict occurred in README.md on line nr 5 when two different feature b
 
 **Kristina**
 - Created and completed Issue #1 and added the TEAM.md file. Created and completed Issue #2 Add validation for BarStation request, created a feature branch from main via terminal, made changes in multiple commits, pushed the branch, opened a PR, and added reviewers. Performed a rebase via terminal to clean up commit history before merge. Reviewed ProductMapper tests PR #3, ran tests locally via terminal, then squashed and merged the PR. Created conflict-readme branch and intentionally modified the same README line to create a merge conflict. Reviewed and merged Readme PR #9 into main. Resolved the resulting merge conflict locally and pushed the fix. Deleted my merged feature branch using terminal command git branch -d feature/bar-station-validation. Reviewed PR #7.
+
+**Triinu**
+- Created the conflict in Readme file with Kristina. Created the HANDIN.md file.
