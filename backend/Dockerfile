@@ -1,9 +1,7 @@
-FROM eclipse-temurin:21-jdk AS build
+FROM eclipse-temurin:21-jdk
 WORKDIR /app
-
-# Copy the pre-built JAR from the target directory
-COPY target/*.jar app.jar
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
-
+COPY . .
+RUN ./mvnw dependency:go-offline
+CMD ["./mvnw", "spring-boot:run"]
 EXPOSE 8080
+
