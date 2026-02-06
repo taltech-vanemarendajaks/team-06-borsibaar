@@ -52,8 +52,9 @@ services:
       - .env
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
-      
-      
+    networks:
+      - borsibaar-network
+
   nginx:
     image: nginx:alpine
     container_name: borsibaar-nginx
