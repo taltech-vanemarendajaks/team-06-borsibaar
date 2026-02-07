@@ -2,6 +2,26 @@ import React from "react";
 import { Plus, Minus, Edit, History, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+interface InventoryItem {
+  id: number;
+  productId: number;
+  productName: string;
+  basePrice: string;
+  minPrice: string;
+  maxPrice: string;
+  quantity: string;
+  lastUpdated: string;
+}
+
+interface InventoryTableProps {
+  inventory: InventoryItem[];
+  onAddStock: (item: InventoryItem) => void;
+  onRemoveStock: (item: InventoryItem) => void;
+  onAdjustStock: (item: InventoryItem) => void;
+  onViewHistory: (item: InventoryItem) => void;
+  onDeleteProduct: (item: InventoryItem) => void;
+}
+
 const InventoryTable = ({
   inventory,
   onAddStock,
@@ -9,7 +29,7 @@ const InventoryTable = ({
   onAdjustStock,
   onViewHistory,
   onDeleteProduct,
-}: any) => {
+}: InventoryTableProps) => {
   // @ts-expect-error: types aren't imported currently from backend
   const getStockStatus = (quantity) => {
     const qty = parseFloat(quantity);
@@ -63,7 +83,7 @@ const InventoryTable = ({
               </td>
             </tr>
           ) : (
-            inventory.map((item: any) => {
+            inventory.map((item: InventoryItem) => {
               const status = getStockStatus(item.quantity);
               return (
                 <tr
