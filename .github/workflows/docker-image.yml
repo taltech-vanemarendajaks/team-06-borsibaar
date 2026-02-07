@@ -14,6 +14,8 @@ jobs:
       SERVER_IP: ${{ secrets.SERVER_IP }}
       APP_PATH: ${{ secrets.APP_PATH }}
       ENV_PRODUCTION_FILE: ${{ secrets.ENV_PRODUCTION_FILE }}
+      CERTBOT_EMAIL: ${{ secrets.CERTBOT_EMAIL }}
+      DOMAIN: ${{ secrets.DOMAIN }}
       DOCKER_COMPOSE_FILE: docker-compose.prod.yaml
 
     steps:
@@ -65,11 +67,6 @@ jobs:
             frontend/Dockerfile \
             .env.production
 
-      - name: Install sshpass and openssh-client
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y sshpass openssh-client
-
       - name: Copy deployment package to server
         run: |
           scp -i ~/.ssh/id_rsa \
@@ -109,19 +106,18 @@ jobs:
           # docker image prune -af || true
 
           # Stop and remove existing containers gracefully
-          docker compose -f "$DOCKER_COMPOSE_FILE" down --remove-orphans || true
+          docker compose -f "$DOCKER_COMPOSE_FILE" down --remove-orphans --timeout 15
           
-          # Wait a moment for cleanup to complete
-          sleep 2
-          
-          # Check if any containers still exist and force remove only if necessary
-          if docker ps -a --format '{{.Names}}' | grep -qE 'borsibaar-(db|backend|frontend|nginx|certbot)'; then
-            echo "Containers still exist, force removing..."
-            docker rm -f borsibaar-db borsibaar-backend borsibaar-frontend borsibaar-nginx borsibaar-certbot 2>/dev/null || true
+          # Verify containers are gone
+          project_name="borsibaar"
+          if docker ps -a --filter "label=com.docker.compose.project=$project_name" --format '{{.Names}}' | grep .; then
+            echo "ERROR: Containers still exist after graceful shutdown"
+            docker ps -a --filter "label=com.docker.compose.project=$project_name" --format 'table {{.Names}}\t{{.Status}}'
+            exit 1
           fi
 
           # Check if SSL certificates exist
-          if [ ! -f "./certbot/conf/live/team6-borsibaar.hopto.org/fullchain.pem" ]; then
+          if [ ! -f "./certbot/conf/live/$DOMAIN/fullchain.pem" ]; then
             echo "SSL certificates not found. Starting with HTTP-only configuration..."
             
             # Disable HTTPS config and enable HTTP-only config
@@ -132,18 +128,31 @@ jobs:
             docker compose -f "$DOCKER_COMPOSE_FILE" build --no-cache
             docker compose -f "$DOCKER_COMPOSE_FILE" up -d
             
-            # Wait for nginx to be ready
-            sleep 5
+            # Wait for nginx to be ready with timeout
+            echo "Waiting for nginx to be ready..."
+            TIMEOUT=30
+            ELAPSED=0
+            until docker compose -f "$DOCKER_COMPOSE_FILE" exec -T nginx test -f /var/run/nginx.pid 2>/dev/null; do
+              if [ $ELAPSED -ge $TIMEOUT ]; then
+                echo "ERROR: Nginx failed to start within ${TIMEOUT}s"
+                docker compose -f "$DOCKER_COMPOSE_FILE" logs nginx
+                exit 1
+              fi
+              echo "Waiting for nginx... (${ELAPSED}s/${TIMEOUT}s)"
+              sleep 2
+              ELAPSED=$((ELAPSED + 2))
+            done
+            echo "Nginx is ready!"
             
             # Generate SSL certificates
             echo "Generating SSL certificates..."
             docker compose -f "$DOCKER_COMPOSE_FILE" run --rm --entrypoint certbot certbot certonly \
               --webroot \
               --webroot-path=/var/www/certbot \
-              --email borsibaar@gmail.com \
+              --email $CERTBOT_EMAIL \
               --agree-tos \
               --no-eff-email \
-              -d team6-borsibaar.hopto.org
+              -d $DOMAIN
             
             # Switch to HTTPS configuration
             echo "Switching to HTTPS configuration..."
