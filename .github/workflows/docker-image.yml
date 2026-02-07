@@ -154,6 +154,9 @@ jobs:
               --no-eff-email \
               -d $DOMAIN
             
+            # Start certbot renewal service
+            docker compose -f "$DOCKER_COMPOSE_FILE" --profile renewal up -d certbot
+            
             # Switch to HTTPS configuration
             echo "Switching to HTTPS configuration..."
             mv nginx/conf.d/borsibaar-http-only.conf nginx/conf.d/borsibaar-http-only.conf.disabled
@@ -173,6 +176,9 @@ jobs:
             # Rebuild and start containers
             docker compose -f "$DOCKER_COMPOSE_FILE" build --no-cache
             docker compose -f "$DOCKER_COMPOSE_FILE" up -d
+            
+            # Start certbot renewal service
+            docker compose -f "$DOCKER_COMPOSE_FILE" --profile renewal up -d certbot
           fi
 
           # Clean up old images
