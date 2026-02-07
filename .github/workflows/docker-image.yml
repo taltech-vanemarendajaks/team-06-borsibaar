@@ -144,7 +144,7 @@ jobs:
             done
             echo "Nginx is ready!"
             
-            # Generate SSL certificates
+            # Generate SSL certificates (or use existing if valid)
             echo "Generating SSL certificates..."
             docker compose -f "$DOCKER_COMPOSE_FILE" run --rm --entrypoint certbot certbot certonly \
               --webroot \
@@ -152,6 +152,8 @@ jobs:
               --email $CERTBOT_EMAIL \
               --agree-tos \
               --no-eff-email \
+              --non-interactive \
+              --keep-until-expiring \
               -d $DOMAIN
             
             # Start certbot renewal service
