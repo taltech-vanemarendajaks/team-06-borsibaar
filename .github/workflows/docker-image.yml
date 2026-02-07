@@ -137,7 +137,7 @@ jobs:
             
             # Generate SSL certificates
             echo "Generating SSL certificates..."
-            docker compose -f "$DOCKER_COMPOSE_FILE" run --rm certbot certonly \
+            docker compose -f "$DOCKER_COMPOSE_FILE" run --rm --entrypoint certbot certbot certonly \
               --webroot \
               --webroot-path=/var/www/certbot \
               --email borsibaar@gmail.com \
