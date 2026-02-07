@@ -115,9 +115,9 @@ jobs:
           sleep 2
           
           # Check if any containers still exist and force remove only if necessary
-          if docker ps -a --format '{{.Names}}' | grep -qE 'borsibaar-(db|backend|frontend|nginx)'; then
+          if docker ps -a --format '{{.Names}}' | grep -qE 'borsibaar-(db|backend|frontend|nginx|certbot)'; then
             echo "Containers still exist, force removing..."
-            docker rm -f borsibaar-db borsibaar-backend borsibaar-frontend borsibaar-nginx 2>/dev/null || true
+            docker rm -f borsibaar-db borsibaar-backend borsibaar-frontend borsibaar-nginx borsibaar-certbot 2>/dev/null || true
           fi
 
           # Check if SSL certificates exist
