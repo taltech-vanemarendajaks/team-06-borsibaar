@@ -8,3 +8,6 @@ backend/.env
 nginx/ssl/
 *.pem
 *.key
+
+certbot/conf/
+certbot/www/
